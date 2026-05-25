@@ -16,18 +16,4 @@ Lưu dự án cuối kỳ môn học lập trình android
 
 Dưới đây là giao diện chạy thực tế của app trên thiết bị giả lập Android Studio:
 
-<table align="center">
-  <tr>
-    <td align="center"><b>Màn hình chính (Trang chủ &amp; Tìm kiếm)</b></td>
-    <td align="center"><b>Trình điều khiển phát nhạc (Player)</b></td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="screenshots/main_screen.png" width="260" alt="Main Screen"/>
-    </td>
-    <td align="center">
-      <img src="screenshots/player_screen.png" width="260" alt="Player Screen"/>
-    </td>
-  </tr>
-</table>
-
+<img width="408" height="816" alt="image" src="https://github.com/user-attachments/assets/5074f4de-10e1-4ae0-aed2-be3252410481" />
