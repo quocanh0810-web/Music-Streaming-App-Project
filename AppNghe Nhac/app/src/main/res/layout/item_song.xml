@@ -1,37 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardSong"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp">
-
-    <ImageView
-        android:id="@+id/imgSong"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:scaleType="centerCrop"/>
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="#1A1A2E">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="12dp">
+        android:orientation="horizontal"
+        android:padding="12dp">
 
-        <TextView
-            android:id="@+id/txtTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+        <ImageView
+            android:id="@+id/imgSong"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:scaleType="centerCrop"/>
 
-        <TextView
-            android:id="@+id/txtArtist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_marginStart="14dp">
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tên bài hát"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:maxLines="1"/>
+
+            <TextView
+                android:id="@+id/txtArtist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ca sĩ"
+                android:textColor="#B3B3B3"
+                android:textSize="14sp"
+                android:layout_marginTop="6dp"
+                android:maxLines="1"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgFavorite"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="12dp"
+            android:padding="4dp"
+            android:src="@android:drawable/btn_star_big_off"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@android:drawable/ic_media_play"
+            app:tint="#1DB954"
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>

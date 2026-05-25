@@ -1,38 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="20dp">
-
+    android:background="@drawable/bg_gradient">
+    <!-- BACKGROUND IMAGE -->
     <ImageView
-        android:id="@+id/imgMusic"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:scaleType="centerCrop"/>
-
-    <TextView
-        android:id="@+id/txtMusicTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"/>
-
-    <TextView
-        android:id="@+id/txtMusicArtist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"/>
-
-    <Button
-        android:id="@+id/btnPlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pause"
-        android:layout_marginTop="20dp"/>
-
-</LinearLayout>
+        android:id="@+id/imgBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="0.3"/>
+    <!-- MAIN CONTENT -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
+        <!-- ALBUM IMAGE -->
+        <ImageView
+            android:id="@+id/imgMusic"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="40dp"
+            android:scaleType="centerCrop"/>
+        <!-- TITLE -->
+        <TextView
+            android:id="@+id/txtMusicTitle"
+            android:shadowColor="#000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên bài hát"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"/>
+        <!-- ARTIST -->
+        <TextView
+            android:id="@+id/txtMusicArtist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ca sĩ"
+            android:textColor="#CCCCCC"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"/>
+        <!-- SEEK BAR -->
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:progressTint="#1DB954"
+            android:thumbTint="#1DB954"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"/>
+        <!-- TIME -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/txtCurrentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0:00"
+                android:textColor="#FFFFFF"/>
+            <TextView
+                android:id="@+id/txtTotalTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0:00"
+                android:textColor="#FFFFFF"
+                android:layout_alignParentEnd="true"
+                android:layout_weight="1"
+                android:gravity="end"/>
+        </LinearLayout>
+        <!-- BUTTONS -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="30dp">
+            <!-- PREVIOUS -->
+            <ImageButton
+                android:id="@+id/btnPrev"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@android:drawable/ic_media_previous"
+                android:background="@android:color/transparent"
+                android:tint="#FFFFFF"/>
+            <!-- PLAY PAUSE -->
+            <ImageButton
+                android:id="@+id/btnPlay"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:src="@android:drawable/ic_media_pause"
+                android:background="@android:color/transparent"
+                android:tint="#FFFFFF"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"/>
+            <!-- NEXT -->
+            <ImageButton
+                android:id="@+id/btnNext"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@android:drawable/ic_media_next"
+                android:background="@android:color/transparent"
+                android:tint="#FFFFFF"/>
+        </LinearLayout>
+        <!-- LYRICS -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="30dp">
+            <TextView
+                android:id="@+id/txtLyrics"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lyrics bài hát..."
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:lineSpacingExtra="8dp"/>
+        </ScrollView>
+    </LinearLayout>
+</RelativeLayout>
