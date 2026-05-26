@@ -26,21 +26,16 @@ import java.util.Comparator;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
-
     RecyclerView recyclerViewSongs;
     RecyclerView recyclerViewRecent;
     RecyclerView recyclerViewFavorite;
-
     TextView txtRecentHeader;
     TextView txtFavoriteHeader;
-
     EditText edtSearch;
-
     ArrayList<Song> songList = new ArrayList<>();
     ArrayList<Song> filteredList = new ArrayList<>();
     ArrayList<Song> recentList = new ArrayList<>();
     ArrayList<Song> favoriteList = new ArrayList<>();
-
     SongAdapter adapter;
     SongAdapter recentAdapter;
     SongAdapter favoriteAdapter;
