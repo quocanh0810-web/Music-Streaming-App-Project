@@ -12,7 +12,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // Đợi 3000ms (3 giây) rồi tự động chuyển màn hình
+        // Đợi 3 giây rồi tự động chuyển màn hình
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

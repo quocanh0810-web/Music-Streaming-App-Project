@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,19 +28,30 @@ import java.util.Comparator;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
-    RecyclerView recyclerViewSongs;
-    RecyclerView recyclerViewRecent;
-    RecyclerView recyclerViewFavorite;
+    // Khai báo các thành phần giao diện (UI Components)
+    RecyclerView recyclerViewSongs;      // Danh sách Popular Songs
+    RecyclerView recyclerViewNewSongs;   // Danh sách New Songs
+    RecyclerView recyclerViewRecent;     // Danh sách Nghe gần đây
+    RecyclerView recyclerViewFavorite;   // Danh sách Bài hát yêu thích
+    ViewPager2 viewPagerBanner;          // Slider Banner ảnh trượt đầu trang
+
     TextView txtRecentHeader;
     TextView txtFavoriteHeader;
     EditText edtSearch;
+
+    // Khai báo các mảng chứa dữ liệu bài hát
     ArrayList<Song> songList = new ArrayList<>();
-    ArrayList<Song> filteredList = new ArrayList<>();
+    ArrayList<Song> filteredPopularList = new ArrayList<>();
+    ArrayList<Song> filteredNewList = new ArrayList<>();
     ArrayList<Song> recentList = new ArrayList<>();
     ArrayList<Song> favoriteList = new ArrayList<>();
-    SongAdapter adapter;
+
+    // Khai báo các bộ điều phối hiển thị (Adapters)
+    SongAdapter popularAdapter;
+    SongAdapter newSongsAdapter;
     SongAdapter recentAdapter;
     SongAdapter favoriteAdapter;
+    BannerAdapter bannerAdapter;
 
     FirebaseDatabase database;
     DatabaseReference reference;
@@ -48,40 +61,49 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Ánh xạ view
+        // 1. Ánh xạ các View từ Layout XML sang Code Java
         recyclerViewSongs = findViewById(R.id.recyclerViewSongs);
+        recyclerViewNewSongs = findViewById(R.id.recyclerViewNewSongs);
         recyclerViewRecent = findViewById(R.id.recyclerViewRecent);
         recyclerViewFavorite = findViewById(R.id.recyclerViewFavorite);
+        viewPagerBanner = findViewById(R.id.viewPagerBanner);
         txtRecentHeader = findViewById(R.id.txtRecentHeader);
         txtFavoriteHeader = findViewById(R.id.txtFavoriteHeader);
         edtSearch = findViewById(R.id.edtSearch);
 
-        // RECYCLER VIEW Chính
-        recyclerViewSongs.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new SongAdapter(this, filteredList);
-        recyclerViewSongs.setAdapter(adapter);
+        // 2. Cấu hình hiển thị Lưới ô vuông 2 CỘT cho Popular Songs
+        recyclerViewSongs.setLayoutManager(new GridLayoutManager(this, 2));
+        popularAdapter = new SongAdapter(this, filteredPopularList);
+        recyclerViewSongs.setAdapter(popularAdapter);
 
-        // RECYCLER VIEW Nghe gần đây
+        // 3. Cấu hình hiển thị Lưới ô vuông 2 CỘT cho New Songs
+        recyclerViewNewSongs.setLayoutManager(new GridLayoutManager(this, 2));
+        newSongsAdapter = new SongAdapter(this, filteredNewList);
+        recyclerViewNewSongs.setAdapter(newSongsAdapter);
+
+        // 4. Cấu hình hiển thị Cuộn ngang cho danh sách Nghe gần đây
         recyclerViewRecent.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recentAdapter = new SongAdapter(this, recentList, true);
         recyclerViewRecent.setAdapter(recentAdapter);
-
         txtRecentHeader.setVisibility(View.GONE);
         recyclerViewRecent.setVisibility(View.GONE);
 
-        // RECYCLER VIEW Bài hát yêu thích
+        // 5. Cấu hình hiển thị Cuộn ngang cho danh sách Bài hát yêu thích
         recyclerViewFavorite.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         favoriteAdapter = new SongAdapter(this, favoriteList, true);
         recyclerViewFavorite.setAdapter(favoriteAdapter);
-
         txtFavoriteHeader.setVisibility(View.GONE);
         recyclerViewFavorite.setVisibility(View.GONE);
 
-        // FIREBASE CONNECTION
+        // 6. Khởi tạo Slider Banner chuyển động ở đầu trang
+        bannerAdapter = new BannerAdapter(this, songList);
+        viewPagerBanner.setAdapter(bannerAdapter);
+
+        // 7. Cấu hình kết nối tới Firebase Realtime Database
         database = FirebaseDatabase.getInstance("https://appnghenhac-8e5b8-default-rtdb.firebaseio.com/");
         reference = database.getReference("Songs");
 
-        // LẤY DỮ LIỆU REALTIME
+        // 8. Đồng bộ và xử lý dữ liệu thời gian thực từ Cloud Firebase xuống thiết bị
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -90,11 +112,13 @@ public class MainActivity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Song song = dataSnapshot.getValue(Song.class);
                     if (song != null) {
+                        // FIX LỖI: Lấy mã nút khóa cha (song4, song7...) gán trực tiếp làm ID cho bài hát
+                        song.setId(dataSnapshot.getKey());
                         songList.add(song);
                     }
                 }
 
-                // SẮP XẾP AN TOÀN
+                // Sắp xếp thứ tự danh sách bài hát theo bảng chữ cái ABC danh mục Title
                 Collections.sort(songList, new Comparator<Song>() {
                     @Override
                     public int compare(Song s1, Song s2) {
@@ -104,9 +128,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                // Cập nhật làm mới giao diện thanh trượt ảnh Banner đầu trang
+                bannerAdapter.notifyDataSetChanged();
+
+                // Phân tách danh sách bài hát và kích hoạt bộ lọc tìm kiếm
                 filter(edtSearch.getText().toString());
 
-                // ĐỒNG BỘ DANH SÁCH YÊU THÍCH TỪ USER
+                // 9. Đồng bộ danh sách Thả tim (Yêu thích) dựa trên mã nhận diện thiết bị ANDROID_ID
                 String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                 DatabaseReference favRef = database.getReference("Users").child(userId).child("favorites");
 
@@ -116,15 +144,17 @@ public class MainActivity extends AppCompatActivity {
                         favoriteList.clear();
 
                         for (DataSnapshot ds : favSnapshot.getChildren()) {
-                            String favSongId = ds.getKey();
+                            String favSongId = ds.getKey(); // Nhận mã key bài hát đã yêu thích (Ví dụ: "song18")
 
                             for (Song song : songList) {
+                                // So khớp chính xác ID để đưa bài hát tương ứng vào mục yêu thích
                                 if (song.getId() != null && song.getId().equals(favSongId)) {
                                     favoriteList.add(song);
                                 }
                             }
                         }
 
+                        // Điều khiển tự động ẩn/hiện Layout yêu thích dựa trên dữ liệu thật
                         if (favoriteList.isEmpty()) {
                             txtFavoriteHeader.setVisibility(View.GONE);
                             recyclerViewFavorite.setVisibility(View.GONE);
@@ -133,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                             recyclerViewFavorite.setVisibility(View.VISIBLE);
                         }
 
+                        // Thông báo cập nhật danh sách yêu thích cuộn ngang
                         favoriteAdapter.notifyDataSetChanged();
                     }
 
@@ -145,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {}
         });
 
-        // SEARCH BAR
+        // 10. Lắng nghe sự kiện người dùng nhập văn bản vào ô tìm kiếm (Search Bar)
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -160,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Hàm chuyển đổi chuỗi chữ có dấu Tiếng Việt thành chữ không dấu viết thường
     private String removeAccent(String s) {
         if (s == null) return "";
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
@@ -167,10 +199,15 @@ public class MainActivity extends AppCompatActivity {
         return pattern.matcher(temp).replaceAll("").replaceAll("Đ", "D").replaceAll("đ", "d");
     }
 
+    // Hàm xử lý logic tìm kiếm thông minh và phân phối dữ liệu đều vào 2 lưới hiển thị
     private void filter(String text) {
-        filteredList.clear();
+        filteredPopularList.clear();
+        filteredNewList.clear();
+
+        ArrayList<Song> temporaryList = new ArrayList<>();
+
         if (text == null || text.trim().isEmpty()) {
-            filteredList.addAll(songList);
+            temporaryList.addAll(songList);
         } else {
             String query = removeAccent(text.toLowerCase().trim());
             for (Song song : songList) {
@@ -179,13 +216,27 @@ public class MainActivity extends AppCompatActivity {
 
                 if (removeAccent(title.toLowerCase()).contains(query) ||
                         removeAccent(artist.toLowerCase()).contains(query)) {
-                    filteredList.add(song);
+                    temporaryList.add(song);
                 }
             }
         }
-        adapter.notifyDataSetChanged();
+
+        // Thực hiện chia đôi mảng dữ liệu tìm được để đẩy đều sang hai ô lưới song song
+        int halfSize = temporaryList.size() / 2;
+        for (int i = 0; i < temporaryList.size(); i++) {
+            if (i < halfSize) {
+                filteredPopularList.add(temporaryList.get(i));
+            } else {
+                filteredNewList.add(temporaryList.get(i));
+            }
+        }
+
+        // Cập nhật làm mới hiển thị tại cả 2 vùng hiển thị lưới ô vuông chính
+        popularAdapter.notifyDataSetChanged();
+        newSongsAdapter.notifyDataSetChanged();
     }
 
+    // Hàm lưu vết danh sách lịch sử nghe gần đây (Mức trần lưu giữ tối đa 5 bài hát mới nhất)
     public void addToRecent(Song song) {
         if (song == null) return;
         for (int i = 0; i < recentList.size(); i++) {
