@@ -16,6 +16,7 @@ Lưu dự án cuối kỳ môn học lập trình android
 
 Dưới đây là giao diện chạy thực tế của app trên thiết bị giả lập Android Studio:
 
-<img width="408" height="816" alt="image" src="https://github.com/user-attachments/assets/5074f4de-10e1-4ae0-aed2-be3252410481" />
+<img width="465" height="813" alt="image" src="https://github.com/user-attachments/assets/a94dd15d-ea16-457c-a28f-b2d22093e4fb" />
+
 <img width="408" height="825" alt="image" src="https://github.com/user-attachments/assets/0567fdd7-14f9-4e15-baec-bfc0953f308b" />
 
