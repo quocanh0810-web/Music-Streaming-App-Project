@@ -20,3 +20,4 @@ Dưới đây là giao diện chạy thực tế của app trên thiết bị gi
 
 <img width="408" height="825" alt="image" src="https://github.com/user-attachments/assets/0567fdd7-14f9-4e15-baec-bfc0953f308b" />
 
+
